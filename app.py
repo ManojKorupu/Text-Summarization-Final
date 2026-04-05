@@ -21,9 +21,7 @@ nlp = spacy.load("en_core_web_sm")
 # ===== HELPERS =====
 
 def check_api():
-    if not API_KEY or not client:
-        return False
-    return True
+    return API_KEY is not None and client is not None
 
 def extract_text(file):
     try:
@@ -44,9 +42,7 @@ def extract_entities(text):
     return [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
 
 def highlight_entities(text, entities):
-    # Avoid duplicate replacements
     unique_entities = sorted(set([e["text"] for e in entities]), key=len, reverse=True)
-
     for entity in unique_entities:
         text = text.replace(entity, f"<mark>{entity}</mark>")
     return text
@@ -140,7 +136,8 @@ def ask():
     except Exception as e:
         return jsonify({"error": f"Q&A failed: {str(e)}"})
 
-# ===== RUN =====
+# ===== RUN (FIXED FOR RENDER) =====
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
