@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+/* ✅ FIXED TEXTAREA */
+textarea {
+    width: 100%;
+    height: 150px;
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+    font-size: 14px;
+    color: black;              /* 🔥 TEXT VISIBLE */
+    background-color: white;   /* 🔥 CLEAN WHITE BOX */
+    outline: none;
+}
+
+/* Placeholder color */
+textarea::placeholder {
+    color: #777;
+}
+
+input[type="text"] {
+    width: 75%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+/* File input spacing */
+input[type="file"]{
+    margin-top:10px;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 10px;
+    background: #ff7eb3;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover effect */
+button:hover {
+    background: #ff4f9a;
+}
+
+/* Highlighted entities */
+mark {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+    padding: 2px 4px;
+    border-radius: 4px;
+}

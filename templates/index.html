@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Legal Document Assistant</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Legal Document Assistant</h1>
+
+    <div class="card">
+        <textarea id="text" placeholder="Or paste text here..."></textarea>
+        
+        <input type="file" id="fileInput" onchange="showFileName()"/>
+        <p id="fileName"></p>
+
+        <button onclick="clearFile()">Remove File</button>
+
+        <div class="button-group">
+            <button onclick="upload()">Upload</button>
+            <button onclick="summarize()">Summarize</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <input type="text" id="question" placeholder="Ask a question..."/>
+        <button onclick="ask()">Ask</button>
+    </div>
+
+    <div class="card">
+        <h3>Summary / Answer</h3>
+        <div id="output"></div>
+    </div>
+
+    <div class="card">
+        <h3>Detected Legal Entities</h3>
+        <ul id="entities"></ul>
+    </div>
+</div>
+
+<script>
+
+function showFileName(){
+    let file = document.getElementById("fileInput").files[0];
+    document.getElementById("fileName").innerText = file ? file.name : "";
+}
+
+function clearFile(){
+    document.getElementById("fileInput").value = "";
+    document.getElementById("fileName").innerText = "";
+}
+
+function upload(){
+    let formData = new FormData();
+    let file = document.getElementById("fileInput").files[0];
+    let text = document.getElementById("text").value;
+
+    // ✅ Prevent confusion
+    if(file && text){
+        alert("Please use either file OR text, not both.");
+        return;
+    }
+
+    if(file){
+        formData.append("file", file);
+    } else {
+        formData.append("text", text);
+    }
+
+    fetch("/upload", {method:"POST", body:formData})
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.error){alert(data.error);return;}
+        alert(data.message);
+    });
+}
+
+function summarize(){
+    fetch("/summarize",{method:"POST"})
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.error){alert(data.error);return;}
+        document.getElementById("output").innerHTML = data.summary;
+        displayEntities(data.entities);
+    });
+}
+
+function ask(){
+    fetch("/ask",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({question:document.getElementById("question").value})
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.error){alert(data.error);return;}
+        document.getElementById("output").innerText = data.answer;
+    });
+}
+
+function displayEntities(entities){
+    let list = document.getElementById("entities");
+    list.innerHTML = "";
+
+    entities.forEach(e => {
+        let li = document.createElement("li");
+        li.textContent = `${e.text} (${e.label})`;
+        list.appendChild(li);
+    });
+}
+
+</script>
+
+</body>
+</html>
